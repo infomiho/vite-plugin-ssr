@@ -128,14 +128,14 @@ Async Route Functions are forbidden.
 export default async () => { /* ... */ }
 ```
 
-The motivation for an async Route Function is often redirection and/or protecting a private page; instead use <Link href="/RenderErrorPage" text={<code>throw RenderErrorPage()</code>}></Link> with an async <Link text={<code>guard()</code>} href="/guard" /> or <Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" /> hook.
+The motivation for an async Route Function is often redirection and/or protecting a private page; instead use <Link href="/render" text={<code>throw render()</code>} /> or <Link href="/redirect" text={<code>throw redirect()</code>} /> with an async <Link text={<code>guard()</code>} href="/guard" /> or <Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" /> hook.
 
 > An asynchronous Route Function would slow down your entire app: as we have seen in [Lightweight & fast](#lightweight-fast), every time the user navigates to a new page *all* Route Functions are called. This means that a slow Route Function slows down *all* pages.
 
 
-## Redirection & `404`
+## Redirection
 
-See <Link href="/RenderErrorPage" />.
+See <Link href="/redirect" />.
 
 
 ## Cannot provide `pageContext`

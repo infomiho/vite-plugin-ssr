@@ -627,6 +627,16 @@ const headings = [
     url: '/onBeforeRender-isomorphic'
   },
   {
+    level: 2,
+    title: '`throw redirect()`',
+    url: '/redirect'
+  },
+  {
+    level: 2,
+    title: '`throw render()`',
+    url: '/render'
+  },
+  {
     level: 4,
     title: 'Server-side'
   },
@@ -662,7 +672,7 @@ const headings = [
     title: '`render()` hook',
     titleInNav: '`export { render }`',
     isListTitle: true,
-    url: '/render'
+    url: '/render-hook'
   },
   {
     level: 2,

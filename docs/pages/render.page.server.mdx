@@ -1,35 +1,39 @@
-The `render()` hook defines how a page is rendered to HTML.
+import { Link } from '@brillout/docpress'
 
-```js
-// /**/*.page.server.js (usually /renderer/_default.page.server.js)
-// Environment: server
+You can use `throw render()` to:
 
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
-import { renderToHtml, createElement } from 'some-ui-framework'
-
-export { render }
-
-async function render(pageContext){
-  const { Page, pageProps } = pageContext
-  const pageHtml = await renderToHtml(createElement(Page, pageProps))
-
-  const documentHtml = escapeInject`<!DOCTYPE html>
-    <html>
-      <head>
-        <title>My SSR App</title>
-      </head>
-      <body>
-        <div id="page-root">${dangerouslySkipEscape(pageHtml)}</div>
-      </body>
-    </html>`
-
-  return {
-    documentHtml,
-    pageContext: {
-      // We can add some `pageContext` here
-    }
-  }
-}
+```ts
+// Render the error page
+render(statusCode: 401 | 403 | 404 | 429 | 500 | 503, info?: string | Record<string, unknown>)
+// Render another page (while preserving the URL, unlike redirect() which changes the URL)
+render(url: `/${string}`, info?: string | Record<string, unknown>)
 ```
+ - If the first argument is a URL, then that URL is rendered (while preserving the current URL)
+ - If the first argument is a status code, then the <Link text="error page" href="/error-page" /> is rendered.
+   - [`401` Unauthorized](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401) - Access denied, because the user isn't logged in.
+   - [`403` Forbidden](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403) - Access denied, because the user is logged in but isn't allowed.
+   - [`404` Not Found](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404) - Page doesn't exist.
+   - [`429` Too Many Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) - Purposeful rate limiting, because of pricing limit or to protect from [DDoS attacks](https://en.wikipedia.org/wiki/Denial-of-service_attack).
+   - [`500` Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) - Your app has a bug.
+   - [`503` Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) - Your server is overloaded and/or a third-party API isn't responding.
+ - If `info` is a string, then it sets `pageContext.abortReason` which is typically used by the error page to show a message to the user, see <Link href="/error-page" />.
+ - If `info` is an object, then it sets `pageContext` values. For example:
+   ```js
+   const abortReason = `Movie with ID ${id} doesn't exist.`
+   render(404, abortReason)
+   // Is equivalent to:
+   render(404, { abortReason })
+   ```
 
-> `pageContext.Page` is the `export { Page }` of the page's `.page.js` file that is being rendered.
+While it's most commonly used with a [`guard()`](/guard) or [`onBeforeRender()`](/onBeforeRender) hook, you can use it with any hook.
+
+The most common use cases being:
+
+- Authentication and authorization, see <Link href="/auth#login-flow" />.
+- Data fetching error handling, see <Link href="/data-fetching#error-handling" />.
+
+See also:
+
+- <Link href="/redirect" />
+- <Link text={<><code>render()</code> VS <code>redirect()</code></>} href="/abort#render-vs-redirect" />, which one to use depends on your use case.
+- <Link text="Do not swallow" href="/abort#do-not-swallow" /> `throw render()` otherwise it won't work.

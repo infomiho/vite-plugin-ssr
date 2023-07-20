@@ -1,0 +1,23 @@
+import { Link } from '@brillout/docpress'
+
+By using <Link href="/render" text={<code>throw render()</code>}></Link> or <Link href="/redirect" text={<code>throw redirect()</code>}></Link> you abort the rendering of the current page and render something else instead.
+- <Link text={<><code>render()</code> VS <code>redirect()</code></>} href="#render-vs-redirect" />, which one to use depends on your use case.
+- <Link text="Do not swallow" href="#do-not-swallow" /> `throw render()` / `throw redirect()`, otherwise it won't work.
+
+## `render()` VS `redirect()`
+
+While `throw redirect()` changes the URL, `throw render()` preserves the URL:
+ - If a user goes to `/admin` and `throw redirect(302, '/login')` is called, then the user will see a new URL `/login` in the browser's address bar.
+ - If a user goes to `/admin` and `throw render('/login')` is called, then the user keeps seeing the same URL `/admin` in the browser's address bar, while instead of the l
+
+In general, we recommend using `throw render('/login')` instead of `throw redirect(302, '/login')` as it preserves the URL and therefore the user's intention, which we further explain at <Link href="/auth#login-flow" />.
+
+## Do not swallow
+
+Make sure `throw redirect()` / `throw render()` isn't being swallowed. If `throw redirect()` / `throw render()` doesn't have any effect then:
+ - In developement, check your server logs for the following log. If the log is missing then this means that vite-plugin-ssr didn't receive the `throw redirect()` exception: some other code is catching and swallowing it.
+   ```
+   16:00:00 PM [vite-plugin-ssr][request(42)] throw render('/some-url') intercepted while
+   rendering URL '/some-other-url'
+   ```
+ - If you've embedded vite-plugin-ssr into your server using <Link text={<code>renderPage()</code>} href="/renderPage" />, then insepct whether `pageContext.httpResponse.headers` contains the `Location` header and double check that you're correctly adding all the headers defined by `pageContext.httpResponse.headers` to the HTTP response.

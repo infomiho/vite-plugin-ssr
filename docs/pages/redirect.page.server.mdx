@@ -1,0 +1,19 @@
+import { Link } from '@brillout/docpress'
+
+```ts
+// Redirect the user to another URL
+redirect(statusCode: 301 | 302, url: `/${string}` | `https://${string}` | `http://${string}`)
+```
+
+While it's most commonly used with a [`guard()`](/guard) or [`onBeforeRender()`](/onBeforeRender) hook, you can use it with any hook.
+
+The most common use cases being:
+
+- Authentication and authorization, see <Link href="/auth#login-flow" />.
+- Data fetching error handling, see <Link href="/data-fetching#error-handling" />.
+
+See also:
+
+- <Link href="/render" />
+- <Link text={<><code>render()</code> VS <code>redirect()</code></>} href="/abort#render-vs-redirect" />, which one to use depends on your use case.
+- <Link text="Do not swallow" href="/abort#do-not-swallow" /> `throw redirect()` otherwise it won't work.

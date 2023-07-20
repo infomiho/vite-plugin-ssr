@@ -1,0 +1,18 @@
+import { Link } from '@brillout/docpress'
+
+The `usePageContext()` component hook allows you to access the `pageContext` object from any UI component.
+
+```js
+// /components/SomeComponent.{jsx,vue}
+
+import { usePageContext } from 'vike-react'
+/* Or:
+import { usePageContext } from 'vike-vue'
+import { usePageContext } from 'vike-solid'
+*/
+
+// At any UI component:
+const pageContext = usePageContext()
+```
+
+If you don't use <Link text={<><code>vike-react</code>/<code>vike-vue</code>/<code>vike-solid</code></>} href="/vike-packages" />, then see how to implement `usePageContext()` yourself at <Link href="/pageContext-anywhere" />.
